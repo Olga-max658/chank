@@ -40,7 +40,29 @@ int main()
 
     vector<char> fileData(fileSize);
     imageFile.read(fileData.data(), fileSize);
+    size_t position = 8;
+    uint32_t totalBytesRead = 8;
 
+    while (position < fileData.size())
+    {
+        PNGChunk* currentChunk = reinterpret_cast<PNGChunk*>(&fileData[position]);
+        uint32_t chunkLength = Reverse_DWord(currentChunk->length);
+
+        string chunkType(reinterpret_cast<char*>(&currentChunk->type), 4);
+        uint32_t chunkChecksum = Reverse_DWord(currentChunk->CRC);
+
+        cout << "Chunk size: " << chunkLength << endl;
+        cout << "Chunk type: " << chunkType << endl;
+
+        position = position + sizeof(PNGChunk) + chunkLength;
+        totalBytesRead += chunkLength + sizeof(PNGChunk);
+
+        if (chunkType == "IEND")
+        {
+            cout << "Actual file size: " << totalBytesRead << " bytes" << endl;
+            break;
+        }
+    }
 
     return 0;
 }
