@@ -26,6 +26,20 @@ DWORD Reverse_DWord(DWORD in)
 
 int main()
 {
+    ifstream imageFile("promo.png", ios::binary);
+    if (!imageFile.is_open())
+    {
+        cout << "Not open file" << endl;
+        return 1;
+    }
+
+    imageFile.seekg(0, ios::end);
+    size_t fileSize = imageFile.tellg();
+    cout << "File size: " << fileSize << " bytes" << endl;
+    imageFile.seekg(0, ios::beg);
+
+    vector<char> fileData(fileSize);
+    imageFile.read(fileData.data(), fileSize);
 
 
     return 0;
